@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>mios.validation</id>
+    <version>1.0.0.0</version>
+    <authors>Mios</authors>
+    <description>Validation library</description>
+    <language>en</language>
+  </metadata>
+  <files>
+    <file src="Library\bin\Release\*.dll" target="lib" />
+    <file src="Library\bin\Release\*.xml" target="lib" />
+    <file src="Library\bin\Release\*.pdb" target="lib" />
+  </files>
+</package>
