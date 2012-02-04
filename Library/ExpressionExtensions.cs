@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 
 namespace Mios.Validation {
-	internal static class ExpressionExtensions {
+	public static class ExpressionExtensions {
 		public static string GetNameFor<T, TValue>(this Expression<Func<T, TValue>> expression) {
 			return new ExpressionNameVisitor().Visit(expression.Body);
 		}

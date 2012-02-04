@@ -8,5 +8,13 @@
 				modelState.AddModelError(error.Key, error.Message);
 			}
 		}
+		public static bool Into(this IEnumerable<ValidationError> errors, ModelStateDictionary modelState) {
+			var found = false;
+			foreach(var error in errors) {
+				modelState.AddModelError(error.Key, error.Message);
+				found = true;
+			}
+			return found;
+		}
 	}
 }

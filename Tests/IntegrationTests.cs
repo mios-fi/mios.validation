@@ -54,10 +54,14 @@ namespace Tests {
 		public string Password { get; set; }
 		public string PasswordConfirm { get; set; }
 		public Address Address { get; set; }
+		public string[] Tags { get; set; }
+		public Address[] Addresses { get; set; }
 	}
 
 	public class PersonValidator : Validator<User> {
 		public static readonly PersonValidator Strict = new PersonValidator(t => {
+			t.RequireAll(c => c.Tags).NotEmpty().AtMost(5);
+			t.RequireAll(c => c.Addresses).ValidatedBy(new AddressValidator());
 			t.Require(c => c.Mother).NotNull();
 			t.Require(c => c.Sex).Reject(Sex.None);
 			t.Require(c => c.Name).ValidatedBy(NameValidator.Strict);
@@ -89,6 +93,7 @@ namespace Tests {
 		public void ShouldReturnExpectedKeys() {
 			var errors = PersonValidator.Strict.Check(new User {
 				Name = new Name { First = "Bob", Last = null },
+				Tags = new [] { "great","","stupid" },
 				Mother = null,
 				Email = "xxyyzz",
 				Telephone = "12345678901234567890",
@@ -97,12 +102,14 @@ namespace Tests {
 				Password = "secret",
 				PasswordConfirm = "secert"
 			}).ToArray();
-			Assert.Equal(7, errors.Length);
+			Assert.Equal(9, errors.Length);
 			Assert.Contains(new ValidationError { Key = "Name.Last", Message = "A value is required" }, errors);
+			Assert.Contains(new ValidationError { Key = "Tags[1]", Message = "A value is required" }, errors);
+			Assert.Contains(new ValidationError { Key = "Tags[2]", Message = "Value is too long (6 characters while 5 are permitted)" }, errors);
 			Assert.Contains(new ValidationError { Key = "Mother", Message = "Required reference is missing" }, errors);
 			Assert.Contains(new ValidationError { Key = "Email", Message = "Invalid email address" }, errors);
 			Assert.Contains(new ValidationError { Key = "Telephone", Message = "Value is too long (20 characters while 16 are permitted)" }, errors);
-			Assert.Contains(new ValidationError { Key = "Age", Message = "Value -10 is lower than the allowed minimum 0" }, errors);
+			Assert.Contains(new ValidationError { Key = "Age", Message = "Value -10 is less than the allowed minimum 0" }, errors);
 			Assert.Contains(new ValidationError { Key = "Sex", Message = "Value None is not an allowed alternative" }, errors);
 			Assert.Contains(new ValidationError { Key = "", Message = "Password and password confirmation must match" }, errors);
 		}
@@ -110,6 +117,7 @@ namespace Tests {
 		public void ShouldReturnExpectedKeysWithPrefix() {
 			var errors = PersonValidator.Strict.Check(new User {
 				Name = new Name { First = "Bob", Last = null },
+				Tags = new[] { "great", "", "stupid" },
 				Mother = null,
 				Email = "xxyyzz",
 				Telephone = "12345678901234567890",
@@ -118,7 +126,7 @@ namespace Tests {
 				Password = "secret",
 				PasswordConfirm = "secert"
 			}, "form").ToArray();
-			Assert.Equal(7, errors.Length);
+			Assert.Equal(9, errors.Length);
 			Assert.Contains(new ValidationError { Key = "form.Name.Last", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Mother", Message = "Required reference is missing" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Email", Message = "Invalid email address" }, errors);
@@ -127,6 +135,11 @@ namespace Tests {
 			Assert.Contains(new ValidationError { Key = "form.Sex", Message = "Value None is not an allowed alternative" }, errors);
 			Assert.Contains(new ValidationError { Key = "form", Message = "Password and password confirmation must match" }, errors);
 		}
+
+		[Fact]
+		public void EnumerationValidators() {
+		}
+
 		[Fact]
 		public void NestedValidators() {
 			IEnumerable<ValidationError> errors;

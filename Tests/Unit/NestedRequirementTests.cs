@@ -1,5 +1,6 @@
 ﻿using Mios.Validation;
 using Mios.Validation.Extensions;
+using Mios.Validation.Requirements;
 using Xunit;
 
 namespace Tests.Unit {

@@ -66,8 +66,8 @@
   <ItemGroup>
     <Compile Include="Unit\AcceptValuesRequirementTests.cs" />
     <Compile Include="IntegrationTests.cs" />
-    <Compile Include="Unit\NestedRequirement.cs" />
     <Compile Include="Unit\NestedRequirementTests.cs" />
+    <Compile Include="Unit\PropertyRequirementTests.cs" />
     <Compile Include="Unit\ValueMinimumRequirementTests.cs" />
     <Compile Include="Unit\PredicateRequirementTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

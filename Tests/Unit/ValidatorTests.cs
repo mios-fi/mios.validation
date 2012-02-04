@@ -8,7 +8,7 @@ using Mios.Validation;
 namespace Tests.Unit {
 	public class ValidatorTests {
 		public class _Validator<T> : Validator<T> {
-			public RequirementList<T, TProperty> _Require<TProperty>(Expression<Func<T, TProperty>> expression) {
+			public IRequirementList<T, TProperty> _Require<TProperty>(Expression<Func<T, TProperty>> expression) {
 				return Require(expression);
 			}
 		}

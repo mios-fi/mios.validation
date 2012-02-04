@@ -1,29 +1,28 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace Mios.Validation {
-
-	public class RequirementList<TObject, TProperty> : IRequirementList<TObject, TProperty> {
+	public class EnumerableRequirementList<TObject, TProperty> : IRequirementList<TObject, TProperty> {
 		private readonly List<IRequirement<TProperty>> requirements;
-		private readonly Func<TObject, TProperty> function;
+		private readonly Func<TObject, IEnumerable<TProperty>> function;
 		private readonly string key;
 
 		/// <summary>
-		/// Initializes a new <see cref="RequirementList{TObject,TProperty}"/> class with a key determined from the supplied expression
+		/// Initializes a new <see cref="EnumerableRequirementList{TObject,TProperty}"/> class with a key determined from the supplied expression
 		/// </summary>
 		/// <param name="expression">An expression on an object of type <typeparamref name="TObject"/> defining the property on that object to apply requirements to</param>
-		public RequirementList(Expression<Func<TObject, TProperty>> expression) 
+		public EnumerableRequirementList(Expression<Func<TObject, IEnumerable<TProperty>>> expression) 
 			: this( expression.Compile(), expression.GetNameFor()) {
 		}
 
 		/// <summary>
-		/// Initializes a new <see cref="RequirementList{TObject,TProperty}"/> class with the specified key. 
+		/// Initializes a new <see cref="EnumerableRequirementList{TObject,TProperty}"/> class with the specified key. 
 		/// </summary>
 		/// <param name="function">A function of an object of type <typeparamref name="TObject"/> returning the value to apply requirements to</param>
 		/// <param name="key">A key to identify requirements in this list by</param>
-		public RequirementList(Func<TObject, TProperty> function, string key) {
+		public EnumerableRequirementList(Func<TObject, IEnumerable<TProperty>> function, string key) {
 			requirements = new List<IRequirement<TProperty>>();
 			this.function = function;
 			this.key = key;
@@ -48,11 +47,16 @@ namespace Mios.Validation {
 
 		public IEnumerable<ValidationError> Check(TObject @object, string prefix) {
 			if(@object==null) return Enumerable.Empty<ValidationError>();
-			var property = function.Invoke(@object);
-			return requirements.SelectMany(t => t.Check(property).Select(e => new ValidationError {
-				Key = String.Concat(prefix, ".", key, ".", e.Key).Trim('.'),
-				Message = e.Message
-			}));
+			var enumerable = function.Invoke(@object);
+			if(enumerable==null) return Enumerable.Empty<ValidationError>();
+			return enumerable
+				.SelectMany((property,i) => requirements
+					.SelectMany(t => t.Check(property).Select(e => new ValidationError {
+						Key = String.Concat(prefix, ".", key, "[", i, "].", e.Key).Trim('.'),
+						Message = e.Message
+					})
+				)
+			);
 		}
 	}
 }

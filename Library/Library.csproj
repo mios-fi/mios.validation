@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumerableRequirementList.cs" />
     <Compile Include="IRequirement.cs" />
     <Compile Include="IRequirementList.cs" />
     <Compile Include="Requirements\AcceptValuesRequirement.cs" />
@@ -54,7 +55,6 @@
     <Compile Include="Extensions\RequirementExtensions.cs" />
     <Compile Include="Extensions\StringRequirementExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requirements\EnumerationRequirement.cs" />
     <Compile Include="Requirements\NestedRequirement.cs" />
     <Compile Include="Requirements\PredicateRequirement.cs" />
     <Compile Include="Requirements\ReferenceNotNullRequirement.cs" />
