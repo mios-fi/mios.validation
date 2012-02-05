@@ -6,13 +6,13 @@
 		<authors>Mios</authors>
 		<description>MVC helper extensions for the mios.validation library</description>
 		<language>en</language>
+		<dependencies>
+			<dependency id="mios.validation" version="1.0.0.0" />
+		</dependencies>
 	</metadata>
 	<files>
 		<file src="Mvc\bin\Release\*.dll" target="lib" />
 		<file src="Mvc\bin\Release\*.xml" target="lib" />
 		<file src="Mvc\bin\Release\*.pdb" target="lib" />
 	</files>
-	<dependencies>
-		<dependency id="mios.validation" version="1.0.0.0" />
-	</dependencies>
 </package>
