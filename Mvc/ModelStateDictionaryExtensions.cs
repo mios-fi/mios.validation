@@ -14,7 +14,7 @@
 				modelState.AddModelError(error.Key, error.Message);
 				found = true;
 			}
-			return found;
+			return !found;
 		}
 	}
 }
