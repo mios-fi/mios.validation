@@ -79,8 +79,11 @@ namespace Tests {
 				}
 			}, "Invalid email address");
 			t.Require(c => c.Telephone).AtMost(16);
-			t.Require(c => c.Password).NotEmpty().AtMost(128);
-			t.Require(c => c).Satisfies(c => c.Password==c.PasswordConfirm, "Password and password confirmation must match");
+			t.Require(c => c.Password)
+				.NotEmpty().AtMost(128)
+				.Satisfies(
+					(ctx,c) => c.Equals(ctx.PasswordConfirm),
+					"Password and password confirmation must match");
 		});
 
 		public PersonValidator(Action<PersonValidator> init) {
@@ -109,9 +112,9 @@ namespace Tests {
 			Assert.Contains(new ValidationError { Key = "Mother", Message = "Required reference is missing" }, errors);
 			Assert.Contains(new ValidationError { Key = "Email", Message = "Invalid email address" }, errors);
 			Assert.Contains(new ValidationError { Key = "Telephone", Message = "Value is too long (20 characters while 16 are permitted)" }, errors);
-			Assert.Contains(new ValidationError { Key = "Age", Message = "Value -10 is less than the allowed minimum 0" }, errors);
+			Assert.Contains(new ValidationError { Key = "Age", Message = "Value -10 is lower than the allowed minimum 0" }, errors);
 			Assert.Contains(new ValidationError { Key = "Sex", Message = "Value None is not an allowed alternative" }, errors);
-			Assert.Contains(new ValidationError { Key = "", Message = "Password and password confirmation must match" }, errors);
+			Assert.Contains(new ValidationError { Key = "Password", Message = "Password and password confirmation must match" }, errors);
 		}
 		[Fact]
 		public void ShouldReturnExpectedKeysWithPrefix() {
@@ -133,7 +136,7 @@ namespace Tests {
 			Assert.Contains(new ValidationError { Key = "form.Telephone", Message = "Value is too long (20 characters while 16 are permitted)" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Age", Message = "Value -10 is lower than the allowed minimum 0" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Sex", Message = "Value None is not an allowed alternative" }, errors);
-			Assert.Contains(new ValidationError { Key = "form", Message = "Password and password confirmation must match" }, errors);
+			Assert.Contains(new ValidationError { Key = "form.Password", Message = "Password and password confirmation must match" }, errors);
 		}
 
 		[Fact]
@@ -144,11 +147,13 @@ namespace Tests {
 		public void NestedValidators() {
 			IEnumerable<ValidationError> errors;
 			errors = PersonValidator.Strict.Check(new User {
+				Password = "abc", PasswordConfirm = "abc",
 				Address = new Address { Street = "Big street", City = "Bigtown" }
 			}).ToArray();
 			Assert.True(errors.Any(t=>t.Key.Equals("Address.Postalcode")));
 			
 			errors = PersonValidator.Strict.Check(new User {
+				Password = "abc", PasswordConfirm = "abc",
 				Address = new Address { Street = "", City = "" }
 			}).ToArray();
 			Assert.False(errors.Any(t=>t.Key.Equals("Address.Postalcode")));

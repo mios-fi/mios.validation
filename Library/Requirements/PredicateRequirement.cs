@@ -2,24 +2,44 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class PredicateRequirement<T> : IRequirement<T> {
-		private readonly Predicate<T> predicate;
+	public class PredicateRequirement<TContext,TValue> : PredicateRequirement<TValue> {
+		private readonly Func<TContext, TValue, bool> predicateWithContext;
 
-		public PredicateRequirement(Predicate<T> predicate) {
+		public PredicateRequirement(Func<TContext,TValue,bool> predicate) 
+			: base(t => predicate(default(TContext),t)) {
+				predicateWithContext = predicate;
+		}
+
+		public override IEnumerable<ValidationError> Check(object context, TValue value) {
+			var typedContext = default(TContext);
+			if(context is TContext) {
+				typedContext = (TContext)context;
+			}
+			if(!predicateWithContext.Invoke(typedContext, value)) {
+				yield return new ValidationError { Message = Message };
+			}
+		}
+	}
+
+	public class PredicateRequirement<TValue> : AbstractRequirement<TValue> {
+		private readonly Predicate<TValue> predicate;
+
+		public PredicateRequirement(Predicate<TValue> predicate) {
 			this.predicate = predicate;
 			Message = "Predicate not satisfied";
 		}
 
 		public string Message { get; set; }
 
-		#region IRequirement<T> Members
-
-		public IEnumerable<ValidationError> Check(T property) {
-			if (!predicate.Invoke(property)) {
+		public override IEnumerable<ValidationError> Check(TValue value) {
+			if(!predicate.Invoke(value)) {
 				yield return new ValidationError {Message = Message};
 			}
 		}
-
-		#endregion
+		public override IEnumerable<ValidationError> Check(object context, TValue value) {
+			if(!predicate.Invoke(value)) {
+				yield return new ValidationError { Message = Message };
+			}
+		}
 	}
 }

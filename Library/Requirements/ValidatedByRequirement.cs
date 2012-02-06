@@ -2,20 +2,16 @@
 using System.Linq;
 
 namespace Mios.Validation.Requirements {
-	public class ValidatedByRequirement<TProperty> : IRequirement<TProperty> {
-		private Validator<TProperty> validator;
+	public class ValidatedByRequirement<TValue> : AbstractRequirement<TValue> {
+		private readonly Validator<TValue> validator;
 
-		public ValidatedByRequirement(Validator<TProperty> validator) {
+		public ValidatedByRequirement(Validator<TValue> validator) {
 			this.validator = validator;
 		}
 
-		#region IRequirement<TProperty> Members
-
-		public IEnumerable<ValidationError> Check(TProperty property) {
-			if (typeof (TProperty).IsClass && property == null) return Enumerable.Empty<ValidationError>();
+		public override IEnumerable<ValidationError> Check(TValue property) {
+			if (typeof (TValue).IsClass && property == null) return Enumerable.Empty<ValidationError>();
 			return validator.Check(property);
 		}
-
-		#endregion
 	}
 }

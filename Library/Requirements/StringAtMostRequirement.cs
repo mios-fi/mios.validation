@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class StringAtMostRequirement : IRequirement<string> {
+	public class StringAtMostRequirement : AbstractRequirement<string> {
 		private readonly int maxLength;
 
 		public StringAtMostRequirement(int maxLength) {
@@ -12,14 +12,10 @@ namespace Mios.Validation.Requirements {
 
 		public string Message { get; set; }
 
-		#region IRequirement<string> Members
-
-		public IEnumerable<ValidationError> Check(string property) {
-			if (property != null && property.Length > maxLength) {
-				yield return new ValidationError {Message = String.Format(Message, maxLength, property.Length)};
+		public override IEnumerable<ValidationError> Check(string value) {
+			if (value != null && value.Length > maxLength) {
+				yield return new ValidationError {Message = String.Format(Message, maxLength, value.Length)};
 			}
 		}
-
-		#endregion
 	}
 }

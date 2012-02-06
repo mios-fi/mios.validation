@@ -63,10 +63,22 @@ namespace Mios.Validation.Extensions {
 			list.Add(new PredicateRequirement<TProperty>(predicate));
 			return list;
 		}
+		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
+			Func<T,TProperty,bool> predicate) {
+			list.Add(new PredicateRequirement<T,TProperty>(predicate));
+			return list;
+		}
 
 		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
 			Predicate<TProperty> predicate, string message) {
 			var req = new PredicateRequirement<TProperty>(predicate);
+			req.Message = message;
+			list.Add(req);
+			return list;
+		}
+		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
+			Func<T,TProperty,bool> predicate, string message) {
+			var req = new PredicateRequirement<T,TProperty>(predicate);
 			req.Message = message;
 			list.Add(req);
 			return list;

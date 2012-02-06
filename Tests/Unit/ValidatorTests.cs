@@ -33,11 +33,11 @@ namespace Tests.Unit {
 			}
 			[Fact]
 			public void Returns_an_error_for_each_failed_requirement() {
-				var reqA = new Mock<IRequirement<string>>();
+				var reqA = new Mock<AbstractRequirement<string>>() { CallBase = true }; 
 				reqA.Setup(t => t.Check(It.IsAny<string>())).Returns(new[] { new ValidationError { Message ="A" } });
-				var reqB = new Mock<IRequirement<string>>();
+				var reqB = new Mock<AbstractRequirement<string>>() { CallBase = true };
 				reqB.Setup(t => t.Check(It.IsAny<string>())).Returns(new ValidationError[0]);
-				var reqC = new Mock<IRequirement<string>>();
+				var reqC = new Mock<AbstractRequirement<string>>() { CallBase = true };
 				reqC.Setup(t => t.Check(It.IsAny<string>())).Returns(new[] { new ValidationError { Message="C" } });
 				var val = new _Validator<object>();
 				var reqs = val._Require(t => t.ToString());

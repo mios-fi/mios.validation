@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class StringAtLeastRequirement : IRequirement<string> {
+	public class StringAtLeastRequirement : AbstractRequirement<string> {
 		private readonly int minLength;
 
 		public StringAtLeastRequirement(int minLength) {
@@ -12,14 +12,10 @@ namespace Mios.Validation.Requirements {
 
 		public string Message { get; set; }
 
-		#region IRequirement<string> Members
-
-		public IEnumerable<ValidationError> Check(string property) {
-			if (property != null && property.Length < minLength) {
-				yield return new ValidationError {Message = String.Format(Message, minLength, property.Length)};
+		public override IEnumerable<ValidationError> Check(string value) {
+			if (value != null && value.Length < minLength) {
+				yield return new ValidationError {Message = String.Format(Message, minLength, value.Length)};
 			}
 		}
-
-		#endregion
 	}
 }

@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 namespace Mios.Validation {
 
 	public class RequirementList<TObject, TProperty> : IRequirementList<TObject, TProperty> {
-		private readonly List<IRequirement<TProperty>> requirements;
+		private readonly List<AbstractRequirement<TProperty>> requirements;
 		private readonly Func<TObject, TProperty> function;
 		private readonly string key;
 
@@ -24,7 +24,7 @@ namespace Mios.Validation {
 		/// <param name="function">A function of an object of type <typeparamref name="TObject"/> returning the value to apply requirements to</param>
 		/// <param name="key">A key to identify requirements in this list by</param>
 		public RequirementList(Func<TObject, TProperty> function, string key) {
-			requirements = new List<IRequirement<TProperty>>();
+			requirements = new List<AbstractRequirement<TProperty>>();
 			this.function = function;
 			this.key = key;
 		}
@@ -33,7 +33,7 @@ namespace Mios.Validation {
 		/// Adds a requirement to this requirement list
 		/// </summary>
 		/// <param name="requirement">The requirement to add</param>
-		public void Add(IRequirement<TProperty> requirement) {
+		public void Add(AbstractRequirement<TProperty> requirement) {
 			requirements.Add(requirement);
 		}
 
@@ -45,14 +45,20 @@ namespace Mios.Validation {
 		public IEnumerable<ValidationError> Check(TObject @object) {
 			return Check(@object, String.Empty);
 		}
-
+			
 		public IEnumerable<ValidationError> Check(TObject @object, string prefix) {
 			if(@object==null) return Enumerable.Empty<ValidationError>();
 			var property = function.Invoke(@object);
-			return requirements.SelectMany(t => t.Check(property).Select(e => new ValidationError {
-				Key = String.Concat(prefix, ".", key, ".", e.Key).Trim('.'),
-				Message = e.Message
-			}));
+			var errors = new List<ValidationError>();
+			foreach(var requirement in requirements) {
+				foreach(var error in requirement.Check(@object, property)) {
+					errors.Add(new ValidationError {
+						Key = String.Concat(prefix, ".", key, ".", error.Key).Trim('.'),
+						Message = error.Message
+					});
+				}
+			}
+			return errors;
 		}
 	}
 }

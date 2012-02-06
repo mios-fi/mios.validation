@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Mios.Validation {
 	public class EnumerableRequirementList<TObject, TProperty> : IRequirementList<TObject, TProperty> {
-		private readonly List<IRequirement<TProperty>> requirements;
+		private readonly List<AbstractRequirement<TProperty>> requirements;
 		private readonly Func<TObject, IEnumerable<TProperty>> function;
 		private readonly string key;
 
@@ -23,7 +23,7 @@ namespace Mios.Validation {
 		/// <param name="function">A function of an object of type <typeparamref name="TObject"/> returning the value to apply requirements to</param>
 		/// <param name="key">A key to identify requirements in this list by</param>
 		public EnumerableRequirementList(Func<TObject, IEnumerable<TProperty>> function, string key) {
-			requirements = new List<IRequirement<TProperty>>();
+			requirements = new List<AbstractRequirement<TProperty>>();
 			this.function = function;
 			this.key = key;
 		}
@@ -32,7 +32,7 @@ namespace Mios.Validation {
 		/// Adds a requirement to this requirement list
 		/// </summary>
 		/// <param name="requirement">The requirement to add</param>
-		public void Add(IRequirement<TProperty> requirement) {
+		public void Add(AbstractRequirement<TProperty> requirement) {
 			requirements.Add(requirement);
 		}
 
@@ -51,7 +51,7 @@ namespace Mios.Validation {
 			if(enumerable==null) return Enumerable.Empty<ValidationError>();
 			return enumerable
 				.SelectMany((property,i) => requirements
-					.SelectMany(t => t.Check(property).Select(e => new ValidationError {
+					.SelectMany(t => t.Check(@object, property).Select(e => new ValidationError {
 						Key = String.Concat(prefix, ".", key, "[", i, "].", e.Key).Trim('.'),
 						Message = e.Message
 					})

@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class StringNotEmptyRequirement : IRequirement<string> {
+	public class StringNotEmptyRequirement : AbstractRequirement<string> {
 		public StringNotEmptyRequirement() {
 			Message = "A value is required";
 		}
 
 		public string Message { get; set; }
 
-		#region IRequirement<string> Members
-
-		public IEnumerable<ValidationError> Check(string property) {
-			if (String.IsNullOrEmpty(property)) {
+		public override IEnumerable<ValidationError> Check(string value) {
+			if (String.IsNullOrEmpty(value)) {
 				yield return new ValidationError {Message = Message};
 			}
 		}
-
-		#endregion
 	}
 }

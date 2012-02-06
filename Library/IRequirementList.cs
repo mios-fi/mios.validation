@@ -15,6 +15,6 @@ namespace Mios.Validation {
 		/// Adds a requirement to this requirement list
 		/// </summary>
 		/// <param name="requirement">The requirement to add</param>
-		void Add(IRequirement<TProperty> requirement);
+		void Add(AbstractRequirement<TProperty> requirement);
 	}
 }
