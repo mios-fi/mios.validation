@@ -66,6 +66,8 @@
   <ItemGroup>
     <Compile Include="Unit\AcceptValuesRequirementTests.cs" />
     <Compile Include="IntegrationTests.cs" />
+    <Compile Include="Unit\DictionaryRequirementListTests.cs" />
+    <Compile Include="Unit\EnumerableRequirementListTests.cs" />
     <Compile Include="Unit\NestedRequirementTests.cs" />
     <Compile Include="Unit\ValueMinimumRequirementTests.cs" />
     <Compile Include="Unit\PredicateRequirementTests.cs" />

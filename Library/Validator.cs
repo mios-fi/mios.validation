@@ -42,11 +42,11 @@ namespace Mios.Validation {
 		/// <summary>
 		/// Creates a new list of requirements associated with this <see cref="Validator{TObject}"/>
 		/// </summary>
-		/// <typeparam name="TProperty">The type of the enumerable to validate</typeparam>
+		/// <typeparam name="TValue">The type of the enumerable to validate</typeparam>
 		/// <param name="expression">An expression defining the enumerable to validate</param>
 		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
-		protected IRequirementList<TTarget, TProperty> RequireAll<TProperty>(Expression<Func<TTarget, IEnumerable<TProperty>>> expression) {
-			var list = new EnumerableRequirementList<TTarget, TProperty>(expression);
+		protected IRequirementList<TTarget, TValue> RequireAll<TValue>(Expression<Func<TTarget, IEnumerable<TValue>>> expression) {
+			var list = new EnumerableRequirementList<TTarget, TValue>(expression);
 			requirements.Add(list);
 			return list;
 		}
@@ -55,12 +55,37 @@ namespace Mios.Validation {
 		/// <summary>
 		/// Creates a new list of requirements associated with this <see cref="Validator{TObject}"/>
 		/// </summary>
+		/// <typeparam name="TValue">The type of the enumerable to validate</typeparam>
+		/// <param name="expression">An expression defining the enumerable to validate</param>
+		/// <param name="key">The key to identify requirements in this list by</param>
+		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
+		protected IRequirementList<TTarget, TValue> RequireAll<TValue>(Func<TTarget, IEnumerable<TValue>> expression, string key) {
+			var list = new EnumerableRequirementList<TTarget, TValue>(expression,key);
+			requirements.Add(list);
+			return list;
+		}
+
+		/// <summary>
+		/// Creates a new list of requirements associated with this <see cref="Validator{TObject}"/>
+		/// </summary>
+		/// <typeparam name="TProperty">The type of the enumerable to validate</typeparam>
+		/// <param name="expression">An expression defining the enumerable to validate</param>
+		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
+		protected IRequirementList<TTarget, TValue> RequireAll<TKey,TValue>(Expression<Func<TTarget, IDictionary<TKey,TValue>>> expression) {
+			var list = new DictionaryRequirementList<TTarget,TKey,TValue>(expression);
+			requirements.Add(list);
+			return list;
+		}
+
+		/// <summary>
+		/// Creates a new list of requirements associated with this <see cref="Validator{TObject}"/>
+		/// </summary>
 		/// <typeparam name="TProperty">The type of the enumerable to validate</typeparam>
 		/// <param name="expression">An expression defining the enumerable to validate</param>
 		/// <param name="key">The key to identify requirements in this list by</param>
 		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
-		protected IRequirementList<TTarget, TProperty> RequireAll<TProperty>(Func<TTarget, IEnumerable<TProperty>> expression, string key) {
-			var list = new EnumerableRequirementList<TTarget, TProperty>(expression,key);
+		protected IRequirementList<TTarget,TValue> RequireAll<TKey,TValue>(Func<TTarget, IDictionary<TKey,TValue>> expression, string key) {
+			var list = new DictionaryRequirementList<TTarget,TKey,TValue>(expression, key);
 			requirements.Add(list);
 			return list;
 		}

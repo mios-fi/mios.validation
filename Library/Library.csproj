@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DictionaryRequirementList.cs" />
     <Compile Include="EnumerableRequirementList.cs" />
     <Compile Include="IRequirement.cs" />
     <Compile Include="IRequirementList.cs" />
