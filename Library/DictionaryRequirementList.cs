@@ -7,7 +7,9 @@ namespace Mios.Validation {
 	public class DictionaryRequirementList<TObject,TKey,TValue> : IRequirementList<TObject, TValue> {
 		private readonly List<AbstractRequirement<TValue>> requirements;
 		private readonly Func<TObject, IDictionary<TKey,TValue>> function;
+		private Func<int, TKey, string> formatter = (i,k)=>"["+i+"]";
 		private readonly string key;
+
 
 		/// <summary>
 		/// Initializes a new <see cref="DictionaryRequirementList{TObject,TKey,TValue}"/> class with a key determined from the supplied expression
@@ -26,6 +28,16 @@ namespace Mios.Validation {
 			requirements = new List<AbstractRequirement<TValue>>();
 			this.function = function;
 			this.key = key;
+		}
+
+		/// <summary>
+		/// Use the specified function to format indexer
+		/// </summary>
+		/// <param name="formatter">The delegate to use as formatting function</param>
+		/// <returns></returns>
+		public DictionaryRequirementList<TObject, TKey, TValue> FormatIndexerUsing(Func<int, TKey, string> formatter) {
+			this.formatter = formatter;
+			return this;
 		}
 
 		/// <summary>
@@ -52,7 +64,7 @@ namespace Mios.Validation {
 			return enumerable
 				.SelectMany((property,i) => requirements
 				.SelectMany(t => t.Check(@object, property.Value).Select(e => new ValidationError {
-					Key = String.Concat(prefix, ".", key, "[", property.Key, "].", e.Key).Trim('.'),
+					Key = String.Concat(prefix, ".", key, formatter(i,property.Key)+".", e.Key).Trim('.'),
 					Message = e.Message
 				})
 				)

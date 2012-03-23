@@ -45,7 +45,7 @@ namespace Mios.Validation {
 		/// <typeparam name="TValue">The type of the enumerable to validate</typeparam>
 		/// <param name="expression">An expression defining the enumerable to validate</param>
 		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
-		protected IRequirementList<TTarget, TValue> RequireAll<TValue>(Expression<Func<TTarget, IEnumerable<TValue>>> expression) {
+		protected EnumerableRequirementList<TTarget, TValue> RequireAll<TValue>(Expression<Func<TTarget, IEnumerable<TValue>>> expression) {
 			var list = new EnumerableRequirementList<TTarget, TValue>(expression);
 			requirements.Add(list);
 			return list;
@@ -59,7 +59,7 @@ namespace Mios.Validation {
 		/// <param name="expression">An expression defining the enumerable to validate</param>
 		/// <param name="key">The key to identify requirements in this list by</param>
 		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
-		protected IRequirementList<TTarget, TValue> RequireAll<TValue>(Func<TTarget, IEnumerable<TValue>> expression, string key) {
+		protected EnumerableRequirementList<TTarget, TValue> RequireAll<TValue>(Func<TTarget, IEnumerable<TValue>> expression, string key) {
 			var list = new EnumerableRequirementList<TTarget, TValue>(expression,key);
 			requirements.Add(list);
 			return list;
@@ -71,7 +71,7 @@ namespace Mios.Validation {
 		/// <typeparam name="TProperty">The type of the enumerable to validate</typeparam>
 		/// <param name="expression">An expression defining the enumerable to validate</param>
 		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
-		protected IRequirementList<TTarget, TValue> RequireAll<TKey,TValue>(Expression<Func<TTarget, IDictionary<TKey,TValue>>> expression) {
+		protected DictionaryRequirementList<TTarget, TKey, TValue> RequireAll<TKey,TValue>(Expression<Func<TTarget, IDictionary<TKey,TValue>>> expression) {
 			var list = new DictionaryRequirementList<TTarget,TKey,TValue>(expression);
 			requirements.Add(list);
 			return list;
@@ -84,7 +84,7 @@ namespace Mios.Validation {
 		/// <param name="expression">An expression defining the enumerable to validate</param>
 		/// <param name="key">The key to identify requirements in this list by</param>
 		/// <returns>A <see cref="IRequirementList{TObject,TProperty}"/> associated with the specified enumerable</returns>
-		protected IRequirementList<TTarget,TValue> RequireAll<TKey,TValue>(Func<TTarget, IDictionary<TKey,TValue>> expression, string key) {
+		protected DictionaryRequirementList<TTarget, TKey, TValue> RequireAll<TKey,TValue>(Func<TTarget, IDictionary<TKey,TValue>> expression, string key) {
 			var list = new DictionaryRequirementList<TTarget,TKey,TValue>(expression, key);
 			requirements.Add(list);
 			return list;
