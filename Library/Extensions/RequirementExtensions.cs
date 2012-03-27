@@ -36,8 +36,7 @@ namespace Mios.Validation.Extensions {
 			return list;
 		}
 
-		public static IRequirementList<T, TProperty> IsDefinedIn<T, TProperty>(this IRequirementList<T, TProperty> list, Type typeOfEnum)
-			where TProperty : struct {
+		public static IRequirementList<T, TProperty> IsDefinedIn<T, TProperty>(this IRequirementList<T, TProperty> list, Type typeOfEnum) {
 			list.Add(new IsDefinedInEnumRequirement<TProperty>(typeOfEnum));
 			return list;
 		}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class IsDefinedInEnumRequirement<T> : AbstractRequirement<T> where T : struct {
+	public class IsDefinedInEnumRequirement<T> : AbstractRequirement<T> {
 		private readonly Type typeOfEnum;
 
 		public IsDefinedInEnumRequirement(Type typeOfEnum) {
@@ -13,7 +13,7 @@ namespace Mios.Validation.Requirements {
 		public string Message { get; set; }
 
 		public override IEnumerable<ValidationError> Check(T value) {
-			if(!typeOfEnum.IsEnum || Enum.IsDefined(typeOfEnum, value)) {
+			if(value==null || !typeOfEnum.IsEnum || Enum.IsDefined(typeOfEnum, value)) {
 				yield break;
 			}
 			yield return new ValidationError {
