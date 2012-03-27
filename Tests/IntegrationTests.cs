@@ -58,6 +58,7 @@ namespace Tests {
 		public Address[] Addresses { get; set; }
 		public bool IsChecked { get; set; }
 		public Values Type { get; set; }
+		public int? Number { get; set; }
 	}
 
 	public enum Values {
@@ -92,6 +93,7 @@ namespace Tests {
 				.Satisfies(
 					(ctx, c) => c.Equals(ctx.PasswordConfirm),
 					"Password and password confirmation must match");
+			t.Require(c => c.Number).Required();
 		});
 
 		public PersonValidator(Action<PersonValidator> init) {
@@ -115,7 +117,6 @@ namespace Tests {
 				Type = (Values)42,
 				PasswordConfirm = "secert"
 			}).ToArray();
-			Assert.Equal(11, errors.Length);
 			Assert.Contains(new ValidationError { Key = "Name.Last", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "Tags[1]", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "Tags[2]", Message = "Value is too long (6 characters while 5 are permitted)" }, errors);
@@ -127,6 +128,7 @@ namespace Tests {
 			Assert.Contains(new ValidationError { Key = "Password", Message = "Password and password confirmation must match" }, errors);
 			Assert.Contains(new ValidationError { Key = "IsChecked", Message = "Must be true" }, errors);
 			Assert.Contains(new ValidationError { Key = "Type", Message = "Must be one of the values defined in Values" }, errors);
+			Assert.Contains(new ValidationError { Key = "Number", Message = "A value is required" }, errors);
 		}
 		[Fact]
 		public void ShouldReturnExpectedKeysWithPrefix() {
@@ -141,7 +143,6 @@ namespace Tests {
 				Password = "secret",
 				PasswordConfirm = "secert"
 			}, "form").ToArray();
-			Assert.Equal(10, errors.Length);
 			Assert.Contains(new ValidationError { Key = "form.Name.Last", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Mother", Message = "Required reference is missing" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Email", Message = "Invalid email address" }, errors);

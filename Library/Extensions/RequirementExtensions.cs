@@ -102,6 +102,10 @@ namespace Mios.Validation.Extensions {
 			list.Add(req);
 			return list;
 		}
+		public static IRequirementList<T, TProperty> Required<T, TProperty>(this IRequirementList<T, TProperty> list) {
+			list.Add(new RequiredRequirement<TProperty>());
+			return list;
+		}
 
 		public static IRequirementList<TProperty, TProperty> If<T, TProperty>(this IRequirementList<T, TProperty> list, Predicate<TProperty> predicate) {
 			var nested = new RequirementList<TProperty, TProperty>(t => t, String.Empty);

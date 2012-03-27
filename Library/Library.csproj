@@ -62,6 +62,7 @@
     <Compile Include="Requirements\ReferenceNotNullRequirement.cs" />
     <Compile Include="Requirements\RejectValuesRequirement.cs" />
     <Compile Include="RequirementList.cs" />
+    <Compile Include="Requirements\RequiredRequirement.cs" />
     <Compile Include="Requirements\StringAtLeastRequirement.cs" />
     <Compile Include="Requirements\StringAtMostRequirement.cs" />
     <Compile Include="Requirements\StringNotNullRequirement.cs" />
