@@ -56,6 +56,12 @@ namespace Tests {
 		public Address Address { get; set; }
 		public string[] Tags { get; set; }
 		public Address[] Addresses { get; set; }
+		public bool IsChecked { get; set; }
+		public Values Type { get; set; }
+	}
+
+	public enum Values {
+		First, Second
 	}
 
 	public class PersonValidator : Validator<User> {
@@ -63,11 +69,13 @@ namespace Tests {
 			t.RequireAll(c => c.Tags).NotEmpty().AtMost(5);
 			t.RequireAll(c => c.Addresses).ValidatedBy(new AddressValidator());
 			t.Require(c => c.Mother).NotNull();
+			t.Require(c => c.Type).IsDefinedIn(typeof(Values));
+			t.Require(c => c.IsChecked).IsTrue();
 			t.Require(c => c.Sex).Reject(Sex.None);
 			t.Require(c => c.Name).ValidatedBy(NameValidator.Strict);
 			t.Require(c => c.Age).Gt(0).Lt(120);
 			t.Require(c => c.Address).If(
-				c => !String.IsNullOrEmpty(c.Street+c.Postalcode+c.City), 
+				c => !String.IsNullOrEmpty(c.Street+c.Postalcode+c.City),
 				c => c.ValidatedBy(new AddressValidator())
 			);
 			t.Require(c => c.Email).NotEmpty().AtMost(128).Satisfies(c => {
@@ -82,7 +90,7 @@ namespace Tests {
 			t.Require(c => c.Password)
 				.NotEmpty().AtMost(128)
 				.Satisfies(
-					(ctx,c) => c.Equals(ctx.PasswordConfirm),
+					(ctx, c) => c.Equals(ctx.PasswordConfirm),
 					"Password and password confirmation must match");
 		});
 
@@ -96,16 +104,18 @@ namespace Tests {
 		public void ShouldReturnExpectedKeys() {
 			var errors = PersonValidator.Strict.Check(new User {
 				Name = new Name { First = "Bob", Last = null },
-				Tags = new [] { "great","","stupid" },
+				Tags = new[] { "great", "", "stupid" },
 				Mother = null,
 				Email = "xxyyzz",
 				Telephone = "12345678901234567890",
 				Age = -10,
 				Sex = Sex.None,
 				Password = "secret",
+				IsChecked = false,
+				Type = (Values)42,
 				PasswordConfirm = "secert"
 			}).ToArray();
-			Assert.Equal(9, errors.Length);
+			Assert.Equal(11, errors.Length);
 			Assert.Contains(new ValidationError { Key = "Name.Last", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "Tags[1]", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "Tags[2]", Message = "Value is too long (6 characters while 5 are permitted)" }, errors);
@@ -115,6 +125,8 @@ namespace Tests {
 			Assert.Contains(new ValidationError { Key = "Age", Message = "Value -10 is lower than the allowed minimum 0" }, errors);
 			Assert.Contains(new ValidationError { Key = "Sex", Message = "Value None is not an allowed alternative" }, errors);
 			Assert.Contains(new ValidationError { Key = "Password", Message = "Password and password confirmation must match" }, errors);
+			Assert.Contains(new ValidationError { Key = "IsChecked", Message = "Must be true" }, errors);
+			Assert.Contains(new ValidationError { Key = "Type", Message = "Must be one of the values defined in Values" }, errors);
 		}
 		[Fact]
 		public void ShouldReturnExpectedKeysWithPrefix() {
@@ -129,7 +141,7 @@ namespace Tests {
 				Password = "secret",
 				PasswordConfirm = "secert"
 			}, "form").ToArray();
-			Assert.Equal(9, errors.Length);
+			Assert.Equal(10, errors.Length);
 			Assert.Contains(new ValidationError { Key = "form.Name.Last", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Mother", Message = "Required reference is missing" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Email", Message = "Invalid email address" }, errors);
@@ -150,13 +162,13 @@ namespace Tests {
 				Password = "abc", PasswordConfirm = "abc",
 				Address = new Address { Street = "Big street", City = "Bigtown" }
 			}).ToArray();
-			Assert.True(errors.Any(t=>t.Key.Equals("Address.Postalcode")));
-			
+			Assert.True(errors.Any(t => t.Key.Equals("Address.Postalcode")));
+
 			errors = PersonValidator.Strict.Check(new User {
 				Password = "abc", PasswordConfirm = "abc",
 				Address = new Address { Street = "", City = "" }
 			}).ToArray();
-			Assert.False(errors.Any(t=>t.Key.Equals("Address.Postalcode")));
+			Assert.False(errors.Any(t => t.Key.Equals("Address.Postalcode")));
 		}
 	}
 }

@@ -10,6 +10,20 @@ namespace Mios.Validation.Extensions {
 			return list;
 		}
 
+		public static IRequirementList<T,bool> IsTrue<T>(this IRequirementList<T, bool> list) {
+			var predicateRequirement = new PredicateRequirement<bool>(t => t);
+			predicateRequirement.Message = "Must be true";
+			list.Add(predicateRequirement);
+			return list;
+		}
+
+		public static IRequirementList<T,bool> IsFalse<T>(this IRequirementList<T, bool> list) {
+			var predicateRequirement = new PredicateRequirement<bool>(t => !t);
+			predicateRequirement.Message = "Must be false";
+			list.Add(predicateRequirement);
+			return list;
+		}
+
 		public static IRequirementList<T, TProperty> Accept<T, TProperty>(this IRequirementList<T, TProperty> list,
 			params TProperty[] accepted) where TProperty : struct {
 			list.Add(new AcceptValuesRequirement<TProperty>(accepted));
@@ -19,6 +33,12 @@ namespace Mios.Validation.Extensions {
 		public static IRequirementList<T, TProperty> Reject<T, TProperty>(this IRequirementList<T, TProperty> list,
 			params TProperty[] rejected) where TProperty : struct {
 			list.Add(new RejectValuesRequirement<TProperty>(rejected));
+			return list;
+		}
+
+		public static IRequirementList<T, TProperty> IsDefinedIn<T, TProperty>(this IRequirementList<T, TProperty> list, Type typeOfEnum)
+			where TProperty : struct {
+			list.Add(new IsDefinedInEnumRequirement<TProperty>(typeOfEnum));
 			return list;
 		}
 
