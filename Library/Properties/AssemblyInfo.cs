@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Mios.Validation")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP")]
+[assembly: AssemblyCompany("Mios e-Solutions")]
 [assembly: AssemblyProduct("Mios.Validation")]
-[assembly: AssemblyCopyright("Copyright © HP 2009")]
+[assembly: AssemblyCopyright("Copyright © Mios e-Solutions")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
