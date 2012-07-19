@@ -13,9 +13,9 @@ namespace Mios.Validation.Requirements {
 		public string Message { get; set; }
 
 		public override IEnumerable<ValidationError> Check(string value) {
-			if (value != null && value.Length < minLength) {
-				yield return new ValidationError {Message = String.Format(Message, minLength, value.Length)};
-			}
+		  if(value == null || value.Length >= minLength)
+        yield break;
+		  yield return new ValidationError {Message = String.Format(Message, minLength, value.Length)};
 		}
 	}
 }

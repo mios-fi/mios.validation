@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Mios.Validation {
@@ -10,7 +9,9 @@ namespace Mios.Validation {
 		private readonly Func<TObject, TProperty> function;
 		private readonly string key;
 
-		/// <summary>
+	  public bool ContinueOnError { get; set; }
+
+	  /// <summary>
 		/// Initializes a new <see cref="RequirementList{TObject,TProperty}"/> class with a key determined from the supplied expression
 		/// </summary>
 		/// <param name="expression">An expression on an object of type <typeparamref name="TObject"/> defining the property on that object to apply requirements to</param>
@@ -47,18 +48,21 @@ namespace Mios.Validation {
 		}
 			
 		public IEnumerable<ValidationError> Check(TObject @object, string prefix) {
-			if(@object==null) return Enumerable.Empty<ValidationError>();
-			var property = function.Invoke(@object);
-			var errors = new List<ValidationError>();
-			foreach(var requirement in requirements) {
-				foreach(var error in requirement.Check(@object, property)) {
-					errors.Add(new ValidationError {
-						Key = String.Concat(prefix, ".", key, ".", error.Key).Trim('.'),
-						Message = error.Message
-					});
-				}
-			}
-			return errors;
+      var property = default(TProperty);
+      if((object)@object!=null) {
+        property = function.Invoke(@object);
+      }
+      var errorFound = false;
+      foreach(var requirement in requirements) {
+        foreach(var error in requirement.Check(@object, property)) {
+          errorFound = true;
+          yield return new ValidationError {
+            Key = String.Concat(prefix,".",key,".",error.Key).Trim('.'),
+            Message = error.Message
+          };
+        }
+        if(!ContinueOnError && errorFound) yield break;
+      }
 		}
 	}
 }

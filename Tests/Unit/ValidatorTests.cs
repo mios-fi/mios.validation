@@ -41,6 +41,7 @@ namespace Tests.Unit {
 				reqC.Setup(t => t.Check(It.IsAny<string>())).Returns(new[] { new ValidationError { Message="C" } });
 				var val = new _Validator<object>();
 				var reqs = val._Require(t => t.ToString());
+        reqs.ContinueOnError = true;
 				reqs.Add(reqA.Object);
 				reqs.Add(reqB.Object);
 				reqs.Add(reqC.Object);

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>mios.validation.mvc</id>
-    <version>1.0.0.0</version>
+    <version>1.1.0.0</version>
     <authors>Mios</authors>
     <description>MVC helper extensions for the mios.validation library</description>
     <language>en</language>

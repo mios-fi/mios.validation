@@ -2,7 +2,6 @@
 using System.Linq;
 using Mios.Validation;
 using Mios.Validation.Requirements;
-using Moq;
 using Xunit;
 
 namespace Tests.Unit {
@@ -13,8 +12,8 @@ namespace Tests.Unit {
 			var req = new StringRequirement();
 			var list = new RequirementList<Model, string>(t => t.Value);
 			list.Add(req);
-			var nestedRequirement = new NestedRequirement<Model>(list);
-			nestedRequirement.Check(obj);
+			var nestedRequirement = new NestedRequirement<object,Model>(list);
+			nestedRequirement.Check(obj).ToArray();
 			Assert.Same(obj, req.Container);
 			Assert.Same(obj.Value, req.Value);
 		}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Mios.Validation.Requirements;
 
 namespace Mios.Validation.Extensions {
@@ -9,6 +8,12 @@ namespace Mios.Validation.Extensions {
 			list.Add(new ReferenceNotNullRequirement<TProperty>());
 			return list;
 		}
+    
+    public static IRequirementList<T, TProperty> ContinueOnError<T,TProperty>(this IRequirementList<T,TProperty> list) {
+      list.ContinueOnError = true;
+      return list;
+    }
+
 
 		public static IRequirementList<T,bool> IsTrue<T>(this IRequirementList<T, bool> list) {
 			var predicateRequirement = new PredicateRequirement<bool>(t => t);
@@ -25,13 +30,13 @@ namespace Mios.Validation.Extensions {
 		}
 
 		public static IRequirementList<T, TProperty> Accept<T, TProperty>(this IRequirementList<T, TProperty> list,
-			params TProperty[] accepted) where TProperty : struct {
+			params TProperty[] accepted) {
 			list.Add(new AcceptValuesRequirement<TProperty>(accepted));
 			return list;
 		}
 
 		public static IRequirementList<T, TProperty> Reject<T, TProperty>(this IRequirementList<T, TProperty> list,
-			params TProperty[] rejected) where TProperty : struct {
+			params TProperty[] rejected) {
 			list.Add(new RejectValuesRequirement<TProperty>(rejected));
 			return list;
 		}
@@ -107,15 +112,18 @@ namespace Mios.Validation.Extensions {
 			return list;
 		}
 
-		public static IRequirementList<TProperty, TProperty> If<T, TProperty>(this IRequirementList<T, TProperty> list, Predicate<TProperty> predicate) {
-			var nested = new RequirementList<TProperty, TProperty>(t => t, String.Empty);
-			list.Add(new NestedRequirement<TProperty>(nested) { Predicate = predicate });
-			return nested;
-		}
-		public static IRequirementList<T, TProperty> If<T, TProperty>(this IRequirementList<T, TProperty> list, Predicate<TProperty> predicate, Action<IRequirementList<TProperty,TProperty>> initializer) {
+    public static IRequirementList<TProperty, TProperty> If<T, TProperty>(this IRequirementList<T, TProperty> list, Predicate<TProperty> predicate) where T : class {
+      return If(list, (c, t) => predicate(t));
+    }
+    public static IRequirementList<TProperty, TProperty> If<T, TProperty>(this IRequirementList<T, TProperty> list, Func<T,TProperty,bool> predicate) where T : class {
+      var nested = new RequirementList<TProperty, TProperty>(t => t, String.Empty);
+      list.Add(new NestedRequirement<T,TProperty>(nested) { Predicate = predicate });
+      return nested;
+    }
+    public static IRequirementList<T, TProperty> If<T, TProperty>(this IRequirementList<T, TProperty> list, Func<T,TProperty,bool> predicate, Action<IRequirementList<TProperty, TProperty>> initializer) where T : class {
 			var nested = new RequirementList<TProperty, TProperty>(t => t, String.Empty);
 			initializer(nested);
-			list.Add(new NestedRequirement<TProperty>(nested) { Predicate = predicate });
+			list.Add(new NestedRequirement<T,TProperty>(nested) { Predicate = predicate });
 			return list;
 		}
 	}

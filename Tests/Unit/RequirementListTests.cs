@@ -11,28 +11,49 @@ namespace Tests {
 		}
 
 		public class CheckMethod {
-			[Fact]
-			public void Returns_an_error_string_for_each_failed_requirement() {
-				var reqA = new Mock<AbstractRequirement<object>>() { CallBase = true };
-				reqA.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError { Message = "errorA" } }).Verifiable();
-				var reqB = new Mock<AbstractRequirement<object>>() { CallBase = true };
-				reqB.Setup(t => t.Check(It.IsAny<object>())).Returns(new ValidationError[0]).Verifiable();
-				var reqC = new Mock<AbstractRequirement<object>>() { CallBase = true };
-				reqC.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError { Message = "errorC" } }).Verifiable();
-				var list = new RequirementList<object, object>(t=>ToString());
-				list.Add(reqA.Object);
-				list.Add(reqB.Object);
-				list.Add(reqC.Object);
+      [Fact]
+      public void Returns_an_error_string_for_each_failed_requirement_if_continue_on_error_is_true() {
+        var reqA = new Mock<AbstractRequirement<object>>() { CallBase = true };
+        reqA.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError { Message = "errorA" } }).Verifiable();
+        var reqB = new Mock<AbstractRequirement<object>>() { CallBase = true };
+        reqB.Setup(t => t.Check(It.IsAny<object>())).Returns(new ValidationError[0]).Verifiable();
+        var reqC = new Mock<AbstractRequirement<object>>() { CallBase = true };
+        reqC.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError { Message = "errorC" } }).Verifiable();
+        var list = new RequirementList<object, object>(t => ToString()) { ContinueOnError = true }; ;
+        list.Add(reqA.Object);
+        list.Add(reqB.Object);
+        list.Add(reqC.Object);
 
-				var errors = list.Check("").ToArray();
-				reqA.Verify();
-				reqB.Verify();
-				reqC.Verify();
-				Assert.Equal(2, errors.Count());
-				Assert.NotEmpty(errors.Where(t => t.Message=="errorA"));
-				Assert.NotEmpty(errors.Where(t => t.Message=="errorC"));
-			}
-			[Fact]
+        var errors = list.Check("").ToArray();
+        reqA.Verify();
+        reqB.Verify();
+        reqC.Verify();
+        Assert.Equal(2, errors.Count());
+        Assert.NotEmpty(errors.Where(t => t.Message=="errorA"));
+        Assert.NotEmpty(errors.Where(t => t.Message=="errorC"));
+      }
+      [Fact]
+      public void Stop_at_first_failing_validator() {
+        var reqA = new Mock<AbstractRequirement<object>> { CallBase = true };
+        var reqB = new Mock<AbstractRequirement<object>> { CallBase = true };
+        reqA.Setup(t => t.Check(It.IsAny<object>())).Returns(new []{ new ValidationError() });
+        var list = new RequirementList<object, object>(t => ToString());
+        list.Add(reqA.Object);
+        list.Add(reqB.Object);
+        list.Check(null).ToArray();
+        reqB.Verify(t=>t.Check(It.IsAny<object>(),It.IsAny<object>()),Times.Never());
+      }
+      [Fact]
+      public void Do_not_shortcircuit_null_values() {
+        var reqA = new Mock<AbstractRequirement<object>>() { CallBase = true };
+        reqA.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError { Message = "errorA" } });
+        var list = new RequirementList<object, object>(t => ToString());
+        list.Add(reqA.Object);
+
+        var errors = list.Check(null).ToArray();
+        Assert.NotEmpty(errors);
+      }
+      [Fact]
 			public void Each_returned_error_has_a_key_that_reflects_the_tested_member() {
 				var req1 = new Mock<AbstractRequirement<int>>() { CallBase = true };
 				req1.Setup(t => t.Check(It.IsAny<int>())).Returns(new[] { new ValidationError { Message= "A" } });
@@ -40,7 +61,7 @@ namespace Tests {
 				req2.Setup(t => t.Check(It.IsAny<int>())).Returns(new[] { new ValidationError { Message= "B" } });
 				var req3 = new Mock<AbstractRequirement<int>>() { CallBase = true };
 				req3.Setup(t => t.Check(It.IsAny<int>())).Returns(new[] { new ValidationError { Message= "C" } });
-				var list = new RequirementList<string, int>(t => t.Length);
+        var list = new RequirementList<string, int>(t => t.Length) { ContinueOnError = true }; ;
 				list.Add(req1.Object);
 				list.Add(req2.Object);
 				list.Add(req3.Object);
@@ -78,7 +99,7 @@ namespace Tests {
 				req2.Setup(t => t.Check(It.IsAny<int>())).Returns(new[] { new ValidationError { Message= "B" } });
 				var req3 = new Mock<AbstractRequirement<int>>() { CallBase = true };
 				req3.Setup(t => t.Check(It.IsAny<int>())).Returns(new[] { new ValidationError { Message= "C" } });
-				var list = new RequirementList<string, int>(t => t.Length);
+        var list = new RequirementList<string, int>(t => t.Length) { ContinueOnError = true };
 				list.Add(req1.Object);
 				list.Add(req2.Object);
 				list.Add(req3.Object);

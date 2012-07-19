@@ -3,7 +3,22 @@ using Xunit;
 using Mios.Validation.Requirements;
 
 namespace Tests.Unit {
-	public class StringAtMostRequirementTests {
+  public class IsValidEmailRequirementTests {
+    [Fact]
+    public void Returns_null_if_value_is_valid_email() {
+      var requirement = new IsValidEmailRequirement();
+      Assert.Empty(requirement.Check("bob@example.com"));
+      Assert.Empty(requirement.Check("Bob Bobson <bob@example.com>"));
+    }
+    [Fact]
+    public void Returns_error_if_value_is_not_a_valid_email() {
+      var requirement = new IsValidEmailRequirement();
+      Assert.NotEmpty(requirement.Check("123456"));
+      Assert.NotEmpty(requirement.Check("börp@example.com"));
+    }
+  }
+
+  public class StringAtMostRequirementTests {
 		[Fact]
 		public void Returns_null_if_value_is_smaller_or_equal_to_the_max_length() {
 			var requirement = new StringAtMostRequirement(5);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class AcceptValuesRequirement<T> : AbstractRequirement<T> where T : struct {
+	public class AcceptValuesRequirement<T> : AbstractRequirement<T> {
 		private readonly HashSet<T> accepted;
 
 		public AcceptValuesRequirement(params T[] acceptedValues) {

@@ -5,11 +5,16 @@ using System.Linq.Expressions;
 
 namespace Mios.Validation {
 	public class EnumerableRequirementList<TObject, TValue> : IRequirementList<TObject, TValue> {
-		private readonly List<AbstractRequirement<TValue>> requirements;
+	  private readonly List<AbstractRequirement<TValue>> requirements;
 		private readonly Func<TObject, IEnumerable<TValue>> function;
 		private readonly string key;
 
-		/// <summary>
+    /// <summary>
+    /// Gets or sets a value indicating if validation should stop after the first failing requirement.
+    /// </summary>
+    public bool ContinueOnError { get; set; }
+    
+    /// <summary>
 		/// Initializes a new <see cref="EnumerableRequirementList{TObject,TValue}"/> class with a key determined from the supplied expression
 		/// </summary>
 		/// <param name="expression">An expression on an object of type <typeparamref name="TObject"/> defining the property on that object to apply requirements to</param>
@@ -46,17 +51,21 @@ namespace Mios.Validation {
 		}
 
 		public IEnumerable<ValidationError> Check(TObject @object, string prefix) {
-			if(@object==null) return Enumerable.Empty<ValidationError>();
+      if(@object==null) yield break;
 			var enumerable = function.Invoke(@object);
-			if(enumerable==null) return Enumerable.Empty<ValidationError>();
-			return enumerable
-				.SelectMany((property,i) => requirements
-					.SelectMany(t => t.Check(@object, property).Select(e => new ValidationError {
-						Key = String.Concat(prefix, ".", key, "[", i, "].", e.Key).Trim('.'),
-						Message = e.Message
-					})
-				)
-			);
+      if(enumerable==null) yield break;
+      var i=0;
+      foreach(var item in enumerable) {
+        foreach(var requirement in requirements) {
+          foreach(var error in requirement.Check(@object, item)) {
+            yield return new ValidationError {
+						  Key = String.Concat(prefix, ".", key, "[", i, "].", error.Key).Trim('.'),
+						  Message = error.Message
+					  };
+          }
+        }
+        i++;
+      }
 		}
 	}
 }

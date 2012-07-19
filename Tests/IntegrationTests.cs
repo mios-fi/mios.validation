@@ -76,17 +76,10 @@ namespace Tests {
 			t.Require(c => c.Name).ValidatedBy(NameValidator.Strict);
 			t.Require(c => c.Age).Gt(0).Lt(120);
 			t.Require(c => c.Address).If(
-				c => !String.IsNullOrEmpty(c.Street+c.Postalcode+c.City),
+				(o,c) => !String.IsNullOrEmpty(c.Street+c.Postalcode+c.City),
 				c => c.ValidatedBy(new AddressValidator())
 			);
-			t.Require(c => c.Email).NotEmpty().AtMost(128).Satisfies(c => {
-				try {
-					new MailAddress(c);
-					return true;
-				} catch {
-					return false;
-				}
-			}, "Invalid email address");
+			t.Require(c => c.Email).NotEmpty().AtMost(128).IsValidEmail();
 			t.Require(c => c.Telephone).AtMost(16);
 			t.Require(c => c.Password)
 				.NotEmpty().AtMost(128)
@@ -121,7 +114,7 @@ namespace Tests {
 			Assert.Contains(new ValidationError { Key = "Tags[1]", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "Tags[2]", Message = "Value is too long (6 characters while 5 are permitted)" }, errors);
 			Assert.Contains(new ValidationError { Key = "Mother", Message = "Required reference is missing" }, errors);
-			Assert.Contains(new ValidationError { Key = "Email", Message = "Invalid email address" }, errors);
+			Assert.Contains(new ValidationError { Key = "Email", Message = "xxyyzz is not a valid email address" }, errors);
 			Assert.Contains(new ValidationError { Key = "Telephone", Message = "Value is too long (20 characters while 16 are permitted)" }, errors);
 			Assert.Contains(new ValidationError { Key = "Age", Message = "Value -10 is lower than the allowed minimum 0" }, errors);
 			Assert.Contains(new ValidationError { Key = "Sex", Message = "Value None is not an allowed alternative" }, errors);
@@ -145,7 +138,7 @@ namespace Tests {
 			}, "form").ToArray();
 			Assert.Contains(new ValidationError { Key = "form.Name.Last", Message = "A value is required" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Mother", Message = "Required reference is missing" }, errors);
-			Assert.Contains(new ValidationError { Key = "form.Email", Message = "Invalid email address" }, errors);
+			Assert.Contains(new ValidationError { Key = "form.Email", Message = "xxyyzz is not a valid email address" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Telephone", Message = "Value is too long (20 characters while 16 are permitted)" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Age", Message = "Value -10 is lower than the allowed minimum 0" }, errors);
 			Assert.Contains(new ValidationError { Key = "form.Sex", Message = "Value None is not an allowed alternative" }, errors);

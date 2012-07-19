@@ -2,7 +2,7 @@
 	using System.Collections.Generic;
 	using System.Web.Mvc;
 
-	public static class ModelStateDictionaryExtensions {
+	public static class Extensions {
 		public static void AddErrors(this ModelStateDictionary modelState, IEnumerable<ValidationError> errors) {
 			foreach(var error in errors) {
 				modelState.AddModelError(error.Key, error.Message);
@@ -16,5 +16,13 @@
 			}
 			return !found;
 		}
+    public static bool Check<T>(this Validator<T> validator, T @object, ModelStateDictionary modelState) {
+      var errors = validator.Check(@object); var isValid = true;
+      foreach(var error in errors) {
+        modelState.AddModelError(error.Key, error.Message);
+        isValid = false;
+      }
+      return isValid;
+    }
 	}
 }

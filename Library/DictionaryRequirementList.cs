@@ -10,6 +10,10 @@ namespace Mios.Validation {
 		private Func<int, TKey, string> formatter = (i,k)=>"["+i+"]";
 		private readonly string key;
 
+    /// <summary>
+    /// Gets or sets a value indicating if validation should stop after the first failing requirement.
+    /// </summary>
+    public bool ContinueOnError { get; set; }
 
 		/// <summary>
 		/// Initializes a new <see cref="DictionaryRequirementList{TObject,TKey,TValue}"/> class with a key determined from the supplied expression
@@ -57,18 +61,22 @@ namespace Mios.Validation {
 			return Check(@object, String.Empty);
 		}
 
-		public IEnumerable<ValidationError> Check(TObject @object, string prefix) {
-			if(@object==null) return Enumerable.Empty<ValidationError>();
-			var enumerable = function.Invoke(@object);
-			if(enumerable==null) return Enumerable.Empty<ValidationError>();
-			return enumerable
-				.SelectMany((property,i) => requirements
-				.SelectMany(t => t.Check(@object, property.Value).Select(e => new ValidationError {
-					Key = String.Concat(prefix, ".", key, formatter(i,property.Key)+".", e.Key).Trim('.'),
-					Message = e.Message
-				})
-				)
-			);
-		}
-	}
+    public IEnumerable<ValidationError> Check(TObject @object, string prefix) {
+      if(@object==null) yield break;
+      var dictionary = function.Invoke(@object);
+      if(dictionary==null) yield break;
+      var i = 0;
+      foreach(var keyValuePair in dictionary) {
+        foreach(var requirement in requirements) {
+          foreach(var error in requirement.Check(@object, keyValuePair.Value)) {
+            yield return new ValidationError {
+              Key = String.Concat(prefix, ".", key, formatter(i, keyValuePair.Key)+".", error.Key).Trim('.'),
+              Message = error.Message
+            };
+          }
+        }
+        i++;
+      }
+    }
+ 	}
 }

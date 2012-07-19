@@ -10,7 +10,7 @@ namespace Mios.Validation.Requirements {
 		public string Message { get; set; }
 
 		public override IEnumerable<ValidationError> Check(string value) {
-			if (String.IsNullOrEmpty(value)) {
+			if(String.IsNullOrEmpty(value)) {
 				yield return new ValidationError {Message = Message};
 			}
 		}

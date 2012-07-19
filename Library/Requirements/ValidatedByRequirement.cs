@@ -1,17 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Mios.Validation.Requirements {
-	public class ValidatedByRequirement<TValue> : AbstractRequirement<TValue> {
-		private readonly Validator<TValue> validator;
+	public class ValidatedByRequirement<T> : AbstractRequirement<T> {
+		private readonly Validator<T> validator;
 
-		public ValidatedByRequirement(Validator<TValue> validator) {
+		public ValidatedByRequirement(Validator<T> validator) {
 			this.validator = validator;
-		}
+      Message = "Validation failed";
+    }
 
-		public override IEnumerable<ValidationError> Check(TValue property) {
-			if (typeof (TValue).IsClass && property == null) return Enumerable.Empty<ValidationError>();
-			return validator.Check(property);
+    public string Message { get; set; }
+
+		public override IEnumerable<ValidationError> Check(T @object) {
+      if(typeof(T).IsClass && @object == null) yield break;
+      var hasErrors = false;
+      foreach(var error in validator.Check(@object)) {
+        yield return error;
+        hasErrors = true;
+      }
+      if(hasErrors) {
+        yield return new ValidationError { Key = "", Message = Message };
+      }
 		}
 	}
 }

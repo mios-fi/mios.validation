@@ -12,9 +12,14 @@ namespace Mios.Validation.Extensions {
 			return list;
 		}
 
-		public static IRequirementList<T, string> NotEmpty<T>(this IRequirementList<T, string> list) {
-			list.Add(new StringNotEmptyRequirement());
-			return list;
-		}
-	}
+    public static IRequirementList<T, string> NotEmpty<T>(this IRequirementList<T, string> list) {
+      list.Add(new StringNotEmptyRequirement());
+      return list;
+    }
+  
+    public static IRequirementList<T, string> IsValidEmail<T>(this IRequirementList<T, string> list) {
+      list.Add(new IsValidEmailRequirement());
+      return list;
+    }
+  }
 }

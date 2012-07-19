@@ -29,13 +29,20 @@ namespace Tests.Unit {
 			req.Check(null);
 			val.Verify(t => t.Check(It.IsAny<object>()), Times.Never());
 		}
-		[Fact]
-		public void Returns_errors_from_validator() {
-			var val = new Mock<Validator<object>>();
-			val.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError() });
-			var req = new ValidatedByRequirement<object>(val.Object);
-			val.Verify();
-			Assert.NotEmpty(req.Check(new object()));
-		}
-	}
+    [Fact]
+    public void Returns_errors_from_validator() {
+      var val = new Mock<Validator<object>>();
+      val.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError() });
+      var req = new ValidatedByRequirement<object>(val.Object);
+      val.Verify();
+      Assert.NotEmpty(req.Check(new object()));
+    }
+    [Fact]
+    public void Returns_error() {
+      var val = new Mock<Validator<object>>();
+      val.Setup(t => t.Check(It.IsAny<object>())).Returns(new[] { new ValidationError { Key = "A", Message = "a" }});
+      var req = new ValidatedByRequirement<object>(val.Object);
+      Assert.True(req.Check(new object()).Any(t => t.Key==""));
+    }
+  }
 }

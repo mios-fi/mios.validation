@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class RejectValuesRequirement<TValue> : AbstractRequirement<TValue> where TValue : struct {
+	public class RejectValuesRequirement<TValue> : AbstractRequirement<TValue> {
 		private readonly HashSet<TValue> rejected;
 
 		public RejectValuesRequirement(params TValue[] rejectedValues) {
