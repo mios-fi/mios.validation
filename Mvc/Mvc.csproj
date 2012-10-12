@@ -90,7 +90,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{932E12D8-0012-4334-983B-FB81F13206D0}</Project>
-      <Name>Library %28Mios.Validation\Library%29</Name>
+      <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

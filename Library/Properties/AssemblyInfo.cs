@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Mios.Validation")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A simple fluent validation framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mios e-Solutions")]
 [assembly: AssemblyProduct("Mios.Validation")]
