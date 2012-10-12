@@ -66,7 +66,7 @@
     <Compile Include="Requirements\RequiredRequirement.cs" />
     <Compile Include="Requirements\StringAtLeastRequirement.cs" />
     <Compile Include="Requirements\StringAtMostRequirement.cs" />
-    <Compile Include="Requirements\StringNotNullRequirement.cs" />
+    <Compile Include="Requirements\StringNotEmptyRequirement.cs" />
     <Compile Include="Requirements\ValidatedByRequirement.cs" />
     <Compile Include="Requirements\ValueMinimumRequirement.cs" />
     <Compile Include="Requirements\ValueMaximumRequirement.cs" />
