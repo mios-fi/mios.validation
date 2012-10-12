@@ -77,13 +77,16 @@ namespace Tests.Unit {
 		[Fact]
 		public void Returns_error_if_value_is_empty() {
 			var requirement = new StringNotEmptyRequirement();
-			Assert.NotEmpty(requirement.Check(""));
-		}
+      Assert.NotEmpty(requirement.Check(""));
+      Assert.NotEmpty(requirement.Check(" "));
+      Assert.NotEmpty(requirement.Check("\t"));
+      Assert.NotEmpty(requirement.Check("\n"));
+    }
 		[Fact]
 		public void Returns_error_if_value_is_null() {
 			var requirement = new StringNotEmptyRequirement();
-			Assert.NotEmpty(requirement.Check(null));
-		}
+      Assert.NotEmpty(requirement.Check(null));
+    }
 		[Fact]
 		public void Returns_error_message_with_replacements() {
 			var requirement = new StringNotEmptyRequirement();
