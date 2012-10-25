@@ -5,7 +5,7 @@ namespace Mios.Validation.Requirements {
 	public class AcceptValuesRequirement<T> : AbstractRequirement<T> {
 		private readonly HashSet<T> accepted;
 
-		public AcceptValuesRequirement(params T[] acceptedValues) {
+		public AcceptValuesRequirement(IEnumerable<T> acceptedValues) {
 			accepted = new HashSet<T>(acceptedValues);
 			Message = "Value {0} is not among the allowed alternatives";
 		}

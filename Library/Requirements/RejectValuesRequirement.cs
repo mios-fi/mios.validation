@@ -5,7 +5,7 @@ namespace Mios.Validation.Requirements {
 	public class RejectValuesRequirement<TValue> : AbstractRequirement<TValue> {
 		private readonly HashSet<TValue> rejected;
 
-		public RejectValuesRequirement(params TValue[] rejectedValues) {
+		public RejectValuesRequirement(IEnumerable<TValue> rejectedValues) {
 			rejected = new HashSet<TValue>(rejectedValues);
 			Message = "Value {0} is not an allowed alternative";
 		}

@@ -1,5 +1,6 @@
 ﻿using System;
 using Mios.Validation.Requirements;
+using System.Collections.Generic;
 
 namespace Mios.Validation.Extensions {
 	public static class GenericRequirementExtensions {
@@ -29,16 +30,32 @@ namespace Mios.Validation.Extensions {
 			return list;
 		}
 
-		public static IRequirementList<T, TProperty> Accept<T, TProperty>(this IRequirementList<T, TProperty> list,
-			params TProperty[] accepted) {
+		public static IRequirementList<T, TProperty> Accept<T, TProperty>(
+			this IRequirementList<T, TProperty> list,
+			IEnumerable<TProperty> accepted) 
+		{
 			list.Add(new AcceptValuesRequirement<TProperty>(accepted));
 			return list;
 		}
+		public static IRequirementList<T, TProperty> Accept<T, TProperty>(
+			this IRequirementList<T, TProperty> list,
+			params TProperty[] accepted) 
+		{
+			return list.Accept((IEnumerable<TProperty>)accepted);
+		}
 
-		public static IRequirementList<T, TProperty> Reject<T, TProperty>(this IRequirementList<T, TProperty> list,
-			params TProperty[] rejected) {
+		public static IRequirementList<T, TProperty> Reject<T, TProperty>(
+			this IRequirementList<T, TProperty> list,
+			IEnumerable<TProperty> rejected) 
+		{
 			list.Add(new RejectValuesRequirement<TProperty>(rejected));
 			return list;
+		}
+		public static IRequirementList<T, TProperty> Reject<T, TProperty>(
+			this IRequirementList<T, TProperty> list,
+			params TProperty[] rejected) 
+		{
+			return list.Reject((IEnumerable<TProperty>)rejected);
 		}
 
 		public static IRequirementList<T, TProperty> IsDefinedIn<T, TProperty>(this IRequirementList<T, TProperty> list, Type typeOfEnum) {
