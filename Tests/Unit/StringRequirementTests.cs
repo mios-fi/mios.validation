@@ -14,7 +14,7 @@ namespace Tests.Unit {
     public void Returns_error_if_value_is_not_a_valid_email() {
       var requirement = new IsValidEmailRequirement();
       Assert.NotEmpty(requirement.Check("123456"));
-      Assert.NotEmpty(requirement.Check("börp@example.com"));
+      Assert.NotEmpty(requirement.Check("b<rp@example.com"));
     }
   }
 
