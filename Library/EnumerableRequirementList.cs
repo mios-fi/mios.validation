@@ -7,6 +7,7 @@ namespace Mios.Validation {
 	public class EnumerableRequirementList<TObject, TValue> : IRequirementList<TObject, TValue> {
 	  private readonly List<AbstractRequirement<TValue>> requirements;
 		private readonly Func<TObject, IEnumerable<TValue>> function;
+		private Func<int, TValue, string> formatter = (i, k) => "[" + i + "]";
 		private readonly string key;
 
     /// <summary>
@@ -31,6 +32,16 @@ namespace Mios.Validation {
 			requirements = new List<AbstractRequirement<TValue>>();
 			this.function = function;
 			this.key = key;
+		}
+
+		/// <summary>
+		/// Use the specified function to format indexer
+		/// </summary>
+		/// <param name="formatter">The delegate to use as formatting function</param>
+		/// <returns></returns>
+		public EnumerableRequirementList<TObject, TValue> FormatIndexerUsing(Func<int, TValue, string> formatter) {
+			this.formatter = formatter;
+			return this;
 		}
 
 		/// <summary>
@@ -59,7 +70,7 @@ namespace Mios.Validation {
         foreach(var requirement in requirements) {
           foreach(var error in requirement.Check(@object, item)) {
             yield return new ValidationError {
-						  Key = String.Concat(prefix, ".", key, "[", i, "].", error.Key).Trim('.'),
+						  Key = String.Concat(prefix, ".", key, formatter(i,item), ".", error.Key).Trim('.'),
 						  Message = error.Message
 					  };
           }
