@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 
 namespace Mios.Validation.Requirements {
-	public class PredicateRequirement<TContext,TValue> : PredicateRequirement<TValue> {
+
+	public class PredicateRequirement<TContext, TValue> : PredicateRequirement<TValue> {
 		private readonly Func<TContext, TValue, bool> predicateWithContext;
 
-		public PredicateRequirement(Func<TContext,TValue,bool> predicate) 
-			: base(t => predicate(default(TContext),t)) {
-				predicateWithContext = predicate;
+		public PredicateRequirement(Func<TContext, TValue, bool> predicate)
+			: base(t => predicate(default(TContext), t)) {
+			predicateWithContext = predicate;
 		}
 
 		public override IEnumerable<ValidationError> Check(object context, TValue value) {
