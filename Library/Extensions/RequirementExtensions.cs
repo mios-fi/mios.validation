@@ -99,31 +99,23 @@ namespace Mios.Validation.Extensions {
 			return list;
 		}
 
+
 		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
-			Predicate<TProperty> predicate) {
-			list.Add(new PredicateRequirement<TProperty>(predicate));
-			return list;
-		}
-		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
-			Func<T,TProperty,bool> predicate) {
-			list.Add(new PredicateRequirement<T,TProperty>(predicate));
+			Predicate<TProperty> predicate, string message = null) {
+			var req = new PredicateRequirement<TProperty>(predicate);
+			req.Message = message ?? req.Message;
+			list.Add(req);
 			return list;
 		}
 
 		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
-			Predicate<TProperty> predicate, string message) {
-			var req = new PredicateRequirement<TProperty>(predicate);
-			req.Message = message;
+			Func<T, TProperty, bool> predicate, string message = null) {
+			var req = new PredicateRequirement<T, TProperty>(predicate);
+			req.Message = message ?? req.Message;
 			list.Add(req);
 			return list;
 		}
-		public static IRequirementList<T, TProperty> Satisfies<T, TProperty>(this IRequirementList<T, TProperty> list,
-			Func<T,TProperty,bool> predicate, string message) {
-			var req = new PredicateRequirement<T,TProperty>(predicate);
-			req.Message = message;
-			list.Add(req);
-			return list;
-		}
+
 		public static IRequirementList<T, TProperty> Required<T, TProperty>(this IRequirementList<T, TProperty> list) {
 			list.Add(new RequiredRequirement<TProperty>());
 			return list;
