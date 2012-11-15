@@ -7,7 +7,7 @@ namespace Mios.Validation.Requirements {
 
 		public AcceptValuesRequirement(IEnumerable<T> acceptedValues) {
 			accepted = new HashSet<T>(acceptedValues);
-			Message = "Value {0} is not among the allowed alternatives";
+			Message = "AcceptValues";
 		}
 
 		public string Message { get; set; }

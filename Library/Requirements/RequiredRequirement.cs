@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Mios.Validation.Requirements {
 	public class RequiredRequirement<T> : AbstractRequirement<T> {
 		public RequiredRequirement() {
-			Message = "A value is required";
+			Message = "Required";
 		}
 
 		public string Message { get; set; }

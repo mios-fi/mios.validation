@@ -7,7 +7,7 @@ namespace Mios.Validation.Requirements {
 
 		public IsDefinedInEnumRequirement(Type typeOfEnum) {
 			this.typeOfEnum = typeOfEnum;
-			Message = "Must be one of the values defined in "+typeOfEnum.Name;
+			Message = "IsDefinedBy";
 		}
 
 		public string Message { get; set; }

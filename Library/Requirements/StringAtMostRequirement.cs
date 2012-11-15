@@ -7,7 +7,7 @@ namespace Mios.Validation.Requirements {
 
 		public StringAtMostRequirement(int maxLength) {
 			this.maxLength = maxLength;
-			Message = "Value is too long ({1} characters while {0} are permitted)";
+			Message = "StringAtMost";
 		}
 
 		public string Message { get; set; }

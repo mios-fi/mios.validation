@@ -10,7 +10,7 @@ namespace Mios.Validation.Requirements {
 		public ValueMaximumRequirement(TValue upperBound, bool upperExclusive) {
 			Limit = upperBound;
 			Exclusive = upperExclusive;
-			Message = "Value {1} is greater than the allowed maximum {0}";
+			Message = "ValueMaximum";
 		}
 
 		public TValue Limit { get; set; }

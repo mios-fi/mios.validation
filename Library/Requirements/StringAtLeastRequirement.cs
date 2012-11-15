@@ -7,7 +7,7 @@ namespace Mios.Validation.Requirements {
 
 		public StringAtLeastRequirement(int minLength) {
 			this.minLength = minLength;
-			Message = "Value is too short ({1} characters while {0} are required)";
+			Message = "StringAtLeast";
 		}
 
 		public string Message { get; set; }

@@ -27,7 +27,7 @@ namespace Mios.Validation.Requirements {
 
 		public PredicateRequirement(Predicate<TValue> predicate) {
 			this.predicate = predicate;
-			Message = "Predicate not satisfied";
+			Message = "Predicate";
 		}
 
 		public string Message { get; set; }

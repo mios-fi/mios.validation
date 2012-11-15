@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Mios.Validation.Requirements {
 	public class StringNotEmptyRequirement : AbstractRequirement<string> {
 		public StringNotEmptyRequirement() {
-			Message = "A value is required";
+			Message = "StringNotEmpty";
 		}
 
 		public string Message { get; set; }

@@ -5,7 +5,7 @@ using System.Net.Mail;
 namespace Mios.Validation.Requirements {
   public class IsValidEmailRequirement : AbstractRequirement<string> {
     public IsValidEmailRequirement() {
-      Message = "{0} is not a valid email address";
+      Message = "IsValidEmail";
     }
 
     public string Message { get; set; }

@@ -10,7 +10,7 @@ namespace Mios.Validation.Requirements {
 		public ValueMinimumRequirement(TValue lowerBound, bool lowerExclusive) {
 			Limit = lowerBound;
 			Exclusive = lowerExclusive;
-			Message = "Value {1} is lower than the allowed minimum {0}";
+			Message = "ValueMinimum";
 		}
 
 		public TValue Limit { get; set; }

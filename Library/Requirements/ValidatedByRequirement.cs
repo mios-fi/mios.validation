@@ -6,7 +6,7 @@ namespace Mios.Validation.Requirements {
 
 		public ValidatedByRequirement(Validator<T> validator) {
 			this.validator = validator;
-      Message = "Validation failed";
+      Message = "ValidatedBy";
     }
 
     public string Message { get; set; }
